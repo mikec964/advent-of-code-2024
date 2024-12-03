@@ -11,8 +11,9 @@ report_text:str = """\
     1 3 6 7 9
     """
 
-def calc_is_safe(report:list[int]) -> bool:
-    is_safe: bool = True  # Any violation makes this False
+def calc_is_safe(report:list[int], dampener:int=0) -> bool:
+    is_safe_level: bool = True  # Any violation makes this False
+    bad_levels:int = 0
     for idx, level in enumerate(report):
         if idx == 0:
             previous_level: int = level
@@ -21,19 +22,22 @@ def calc_is_safe(report:list[int]) -> bool:
             is_increasing:bool = (level >= previous_level)
         if is_increasing and level <= previous_level:
             # print("Stopped increasing")
-            is_safe = False
-            break
+            is_safe_level = False
         if (not is_increasing) and level >= previous_level:
             # print("Stopped decreasing")
-            is_safe = False
-            break
+            is_safe_level = False
         # print(abs(level - previous_level), end=None)
         if abs(level - previous_level) > 3 or (abs(level - previous_level) < 1):
             # print("Change is <1 or >3")
-            is_safe = False
-            break
-        previous_level = level
-    return is_safe
+            is_safe_level = False
+        if is_safe_level:
+            previous_level = level
+        else:
+            if bad_levels == dampener:
+                return False
+            bad_levels += 1
+            is_safe_level = True  # Reset, check again
+    return True
 
 
 def load_ints_from_rows(rows: list[str]) -> list[list[int]]:
@@ -49,10 +53,10 @@ def load_ints_from_rows(rows: list[str]) -> list[list[int]]:
     return reports
 
 
-def calc_safe_reports(reports:list[list[int]]) -> int:
+def calc_safe_reports(reports:list[list[int]], dampener:int = 0) -> int:
     safe_count:int = 0
     for report in reports:
-        is_safe:bool = calc_is_safe(report)
+        is_safe:bool = calc_is_safe(report, dampener)
         print(report, is_safe)
         safe_count += 1 if is_safe else 0
     return safe_count
@@ -61,12 +65,12 @@ def calc_safe_reports(reports:list[list[int]]) -> int:
 print("======= SAMPLE DATA ========")
 report_lines:list[str] = dedent(report_text).splitlines()
 reports: list[list[int]] = load_ints_from_rows(report_lines)
-pp(reports)
-print(f"{calc_safe_reports(reports)} reports are safe.")
+# pp(reports)
+print(f"{calc_safe_reports(reports, 1)} reports are safe.")
 
-print("======= REAL DEAL ========")
-with open("day-2-input.txt", "r") as f:
-    report_lines = f.readlines()
-reports: list[list[int]] = load_ints_from_rows(report_lines)
-pp(reports)
-print(f"{calc_safe_reports(reports)} reports are safe.")
+# print("======= REAL DEAL ========")
+# with open("day-2-input.txt", "r") as f:
+#     report_lines = f.readlines()
+# reports: list[list[int]] = load_ints_from_rows(report_lines)
+# pp(reports)
+# print(f"{calc_safe_reports(reports, 1)} reports are safe.")
