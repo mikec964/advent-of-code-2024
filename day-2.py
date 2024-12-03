@@ -19,8 +19,6 @@ def calc_is_safe(report:list[int]) -> bool:
             continue
         if idx == 1:
             is_increasing:bool = (level >= previous_level)
-        # if idx >= 1:
-        #     print(previous_level, level)
         if is_increasing and level <= previous_level:
             # print("Stopped increasing")
             is_safe = False
@@ -38,25 +36,37 @@ def calc_is_safe(report:list[int]) -> bool:
     return is_safe
 
 
-def load_int_by_row(filename = "day-2-input.txt") -> list[list[int]]:
-    """Read a file with n numbers per row, return a list per row.
+def load_ints_from_rows(rows: list[str]) -> list[list[int]]:
+    """Parse text lines with numbers, return lists of ints.
     
-    Columns are separated by white space."""
+    Numbers in columns are separated by white space."""
 
     reports:list[list[int]] = []
-    with open(filename, "r") as f:
-        for line in f:
-            items:list[int] = [int(item) 
-                                for item in line.split(" ")]
-            reports.append(items)
+    for line in rows:
+        items:list[int] = [int(item) 
+                            for item in line.split(" ")]
+        reports.append(items)
     return reports
 
 
-reports: list[list[int]] = load_int_by_row()
+def calc_safe_reports(reports:list[list[int]]) -> int:
+    safe_count:int = 0
+    for report in reports:
+        is_safe:bool = calc_is_safe(report)
+        print(report, is_safe)
+        safe_count += 1 if is_safe else 0
+    return safe_count
+
+
+print("======= SAMPLE DATA ========")
+report_lines:list[str] = dedent(report_text).splitlines()
+reports: list[list[int]] = load_ints_from_rows(report_lines)
 pp(reports)
-safe_count:int = 0
-for report in reports:
-    is_safe:bool = calc_is_safe(report)
-    print(report, is_safe)
-    safe_count += 1 if is_safe else 0
-print(f"{safe_count} reports are safe.")
+print(f"{calc_safe_reports(reports)} reports are safe.")
+
+print("======= REAL DEAL ========")
+with open("day-2-input.txt", "r") as f:
+    report_lines = f.readlines()
+reports: list[list[int]] = load_ints_from_rows(report_lines)
+pp(reports)
+print(f"{calc_safe_reports(reports)} reports are safe.")
