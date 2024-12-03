@@ -12,7 +12,7 @@ report_text:str = """\
     """
 
 
-def calc_is_safe(report:list[int], dampener:int=0) -> bool:
+def calc_is_safe(report:list[int]) -> bool:
     found_problem: bool = False  # Any violation makes this True
     bad_levels:int = 0
     for idx, level in enumerate(report):
@@ -32,10 +32,7 @@ def calc_is_safe(report:list[int], dampener:int=0) -> bool:
             # print("Change is <1 or >3")
             found_problem = True
         if found_problem:
-            if bad_levels == dampener:
-                return False
-            bad_levels += 1
-            found_problem = False  # Reset, check again
+            return False
         else:
             previous_level = level
     return True
@@ -54,25 +51,24 @@ def load_ints_from_rows(rows: list[str]) -> list[list[int]]:
     return reports
 
 
-def calc_safe_reports(reports:list[list[int]], dampener:int = 0) -> int:
+def calc_safe_reports(reports:list[list[int]]) -> int:
     safe_count:int = 0
     for report in reports:
-        is_safe:bool = calc_is_safe(report, dampener)
+        is_safe:bool = calc_is_safe(report)
         print(report, is_safe)
         safe_count += 1 if is_safe else 0
     return safe_count
 
 
-dampener: int = 1
 print("======= SAMPLE DATA ========")
 report_lines:list[str] = dedent(report_text).splitlines()
 reports: list[list[int]] = load_ints_from_rows(report_lines)
 # pp(reports)
-print(f"{calc_safe_reports(reports, dampener)} reports are safe.")
+print(f"{calc_safe_reports(reports, )} reports are safe.")
 
 print("======= REAL DEAL ========")
 with open("day-2-input.txt", "r") as f:
     report_lines = f.readlines()
 reports: list[list[int]] = load_ints_from_rows(report_lines)
 # pp(reports)
-print(f"{calc_safe_reports(reports, dampener)} reports are safe.")
+print(f"{calc_safe_reports(reports)} reports are safe.")
