@@ -34,7 +34,7 @@ def calc_list_similarity(list1: list[int], list2: list[int]) -> int:
     """Similarity score per line is left item * number of occurrances in right list."""
     total_similarity: int = 0
     for idx, left_item in enumerate(list1):
-        similarity: int = left_item * list2.count(left_item)
+        similarity = left_item * list2.count(left_item)
         if idx < 10:
             print(f"...{left_item}, {list2.count(left_item)}, {similarity}")
         total_similarity += similarity
@@ -44,8 +44,6 @@ def calc_list_similarity(list1: list[int], list2: list[int]) -> int:
 print(f"Difference {calc_list_distance(location_ids1, location_ids2)}")
 print(f"Similarity {calc_list_similarity(location_ids1, location_ids2)}")
 
-# (locations1, locations2):tuple[list[int], list[int]] = load_lists()
-# (locations1: list[int], locations2: list[int]): = load_lists()
 locations1, locations2 = load_lists()
 print(f"Difference {calc_list_distance(locations1, locations2)}")
 print(f"Similarity {calc_list_similarity(locations1, locations2)}")
