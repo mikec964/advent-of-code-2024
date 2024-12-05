@@ -51,10 +51,21 @@ def load_ints_from_rows(rows: list[str]) -> list[list[int]]:
     return reports
 
 
+def calc_safe_with_dampener(report:list[int], dampener:int = 1) -> bool:
+    # If a report fails, loop through removving a level to see if it passes
+    is_safe: bool = calc_is_safe(report)
+    if is_safe:
+        return True
+    for skip in range(0, len(report)):
+        short_report: list[int] = report[:skip] + report[skip+1:]
+        pp(short_report)
+    return False
+
+
 def calc_safe_reports(reports:list[list[int]]) -> int:
     safe_count:int = 0
     for report in reports:
-        is_safe:bool = calc_is_safe(report)
+        is_safe:bool = calc_safe_with_dampener(report, 1)
         print(report, is_safe)
         safe_count += 1 if is_safe else 0
     return safe_count
@@ -64,11 +75,16 @@ print("======= SAMPLE DATA ========")
 report_lines:list[str] = dedent(report_text).splitlines()
 reports: list[list[int]] = load_ints_from_rows(report_lines)
 # pp(reports)
-print(f"{calc_safe_reports(reports, )} reports are safe.")
-
-print("======= REAL DEAL ========")
-with open("day-2-input.txt", "r") as f:
-    report_lines = f.readlines()
-reports: list[list[int]] = load_ints_from_rows(report_lines)
-# pp(reports)
 print(f"{calc_safe_reports(reports)} reports are safe.")
+# print(calc_safe_with_dampener(reports[1]))
+# print(calc_safe_with_dampener(reports[2]))
+# print(calc_safe_with_dampener(reports[3]))
+# print(calc_safe_with_dampener(reports[4]))
+# print(calc_safe_with_dampener(reports[5]))
+
+# print("======= REAL DEAL ========")
+# with open("day-2-input.txt", "r") as f:
+#     report_lines = f.readlines()
+# reports: list[list[int]] = load_ints_from_rows(report_lines)
+# # pp(reports)
+# print(f"{calc_safe_reports(reports)} reports are safe.")
